@@ -20,7 +20,10 @@ def get_dev_key():
 def get_author_locations(author):
     response = requests.post('http://adslabs.org/adsabs/api/search/',
                              params={'q':'author:{author}'.format(author=author),
-                                     'dev_key':get_dev_key()})
+                                     'dev_key':get_dev_key(),
+                                     'db_f':'astronomy',
+                                     'rows':200,
+                                     'fields':'astronomy'})
     J = response.json()
     
     affiliatia = dict([(x.get('year'),aff) for x in J['results']['docs'] 
