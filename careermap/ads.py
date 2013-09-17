@@ -21,15 +21,14 @@ def get_author_locations(author):
     response = requests.post('http://adslabs.org/adsabs/api/search/',
                              params={'q':'author:{author}'.format(author=author),
                                      'dev_key':get_dev_key(),
-                                     'db_f':'astronomy',
                                      'rows':200,
-                                     'fields':'astronomy'})
+                                     'filter':'database:astronomy'})
     J = response.json()
     
     affiliatia = dict([(x.get('year'),aff) for x in J['results']['docs'] 
                                   for aff,auth in 
                                       zip(x.get('aff',[None]*len(x.get('author'))),
                                           x.get('author')) 
-                                      if author in auth and aff is not None])
+                                      if author.lower() in auth.lower() and aff is not None])
 
     return affiliatia
