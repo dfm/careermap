@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 
 
 def parse_coords(coords, nw):
+    """
+    Example: 79°59′N	85°56′W
+    """
     try:
         pre, suff = coords.split(u"°")
         am, d = suff.split(u"′")
@@ -17,6 +20,7 @@ def parse_coords(coords, nw):
 
 def scrape_cities():
     r = requests.get("http://en.wikipedia.org/wiki/List_of_cities_by_latitude")
+    # do you need this if statement?  I thought "raise_for_status" makes this "if" redundant
     if r.status_code != requests.codes.ok:
         r.raise_for_status()
 
