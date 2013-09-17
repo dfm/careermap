@@ -17,18 +17,20 @@ def get_dev_key():
 
     raise IOError("no ADS API key found in ~/.ads/dev_key")
 
-def get_author_locations(author):
+def get_author_locations(author, return_json=False):
     response = requests.post('http://adslabs.org/adsabs/api/search/',
                              params={'q':'author:{author}'.format(author=author),
                                      'dev_key':get_dev_key(),
                                      'rows':200,
                                      'filter':'database:astronomy'})
     J = response.json()
+    if return_json:
+        return J
     
-    affiliatia = dict([(x.get('year'),aff) for x in J['results']['docs'] 
+    affiliatia = [(x.get('year'),aff) for x in J['results']['docs'] 
                                   for aff,auth in 
                                       zip(x.get('aff',[None]*len(x.get('author'))),
                                           x.get('author')) 
-                                      if author.lower() in auth.lower() and aff is not None])
+                                      if author.lower() in auth.lower() and aff is not None]
 
     return affiliatia
