@@ -1,9 +1,12 @@
 import os
+import redis
 import requests
 import lxml.html
 
 ads_api_url = "http://adslabs.org/adsabs/api/search/"
 ads_html_url = "http://labs.adsabs.harvard.edu/adsabs/abs/"
+
+rdb = redis.Redis()
 
 
 def get_dev_key():
@@ -46,12 +49,16 @@ def get_author_locations(author, return_json=False):
 
     affils = []
     for code, year in results:
-        url = ads_html_url + code
-        r = requests.get(url)
-        if r.status_code != requests.codes.ok:
-            r.raise_for_status()
+        text = rdb.get("career:{0}".format(code))
+        if text is None:
+            url = ads_html_url + code
+            r = requests.get(url)
+            if r.status_code != requests.codes.ok:
+                r.raise_for_status()
+            text = r.text
+            rdb.set("career:{0}".format(code), text)
 
-        tree = lxml.html.fromstring(r.text)
+        tree = lxml.html.fromstring(text)
         for author in tree.find_class("author"):
             if name in author.find_class("authorName")[0].text.lower():
                 a = author.find_class("authorAffiliation")
