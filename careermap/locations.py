@@ -38,11 +38,12 @@ def location_score(affiliation, location):
                                    for city in cities]),
                          re.I)
     score = len(city_re.findall(affiliation))
+    if score == 0:
+        return 0.0
 
     countries = location["country_codes"][:50]
     country_re = re.compile("|".join([r"(\b{0}\b)".format(re.escape(c))
-                                      for c in countries]),
-                            re.I)
+                                      for c in countries]))
     score += len(country_re.findall(affiliation))
 
     state = location["state"]
