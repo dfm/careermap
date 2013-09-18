@@ -49,6 +49,9 @@ def get_author_locations(author, return_json=False):
 
     affils = []
     for code, year in results:
+        if year is None:
+            continue
+
         text = rdb.get("career:{0}".format(code))
         if text is None:
             url = ads_html_url + code

@@ -6,13 +6,12 @@ from __future__ import (division, print_function, absolute_import,
 
 __all__ = ["get_locations"]
 
-from geocode import geocode
-from ads import get_author_locations
+from .geocode import geocode
+from .ads import get_author_locations
 
 
 def get_locations(name):
     affils = get_author_locations(name)
-    print(affils)
     if not len(affils):
         return []
     locations = []
@@ -33,4 +32,4 @@ def get_locations(name):
 
 
 if __name__ == "__main__":
-    print(get_locations("Angus, R"))
+    print(len(get_locations("Simpson, R")))
