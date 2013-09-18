@@ -6,11 +6,13 @@ from __future__ import (division, print_function, absolute_import,
 
 __all__ = ["geocode"]
 
+import os
 import MySQLdb
 
 
 def geocode(aff, min_affils=10):
-    with MySQLdb.connect(host="localhost", user="root", db="ads") as c:
+    with MySQLdb.connect(host="localhost", user="root",
+                         passwd=os.environ.get("DBPASS", ""), db="ads") as c:
         c.execute("""SELECT affiliation, lat, lon, count,
             MATCH (affiliation) AGAINST (%s) AS score
             FROM affiliations
